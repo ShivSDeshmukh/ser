@@ -78,6 +78,12 @@ app.use(express.urlencoded({ extended: true })); // enable urlencoded
 
 // Routes
 
+const cors = require('cors');
+app.use(cors({
+    origin: 'https://shivsdeshmukh.github.io',
+}));
+
+
 app.get("/search", async (req, res, next) => {
   const searchQuery = req.query.q; // Capture the query parameter
 
