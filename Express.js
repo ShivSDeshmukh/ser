@@ -222,10 +222,6 @@ app.get('/health', (req, res) => {
   });
 });
 
-// Default route for invalid requests
-app.use((req, res) => {
-    res.status(404).send('Page not found');
-});
 
   // Start the server listening in port 8000
   const port = process.env.PORT || 8080;
