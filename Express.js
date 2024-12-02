@@ -71,18 +71,14 @@ app.use("/images", (req, res, next) => {
 });
 // Middleware
 
-app.use(cors()); // enable cors
 app.use(morgan("combined")); // enable morgan
 app.use(express.json()); // enable json
 app.use(express.urlencoded({ extended: true })); // enable urlencoded
-
-// Routes
-
-const cors = require('cors');
 app.use(cors({
     origin: 'https://shivsdeshmukh.github.io',
-}));
+}));// enable cors
 
+// Routes
 
 app.get("/search", async (req, res, next) => {
   const searchQuery = req.query.q; // Capture the query parameter
