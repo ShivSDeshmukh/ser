@@ -78,15 +78,15 @@ app.use(express.urlencoded({ extended: true })); // enable urlencoded
 
 // Routes
 
-app.get("/search", async (req, res) => {
-    const searchQuery = req.query.q; // Capture the query parameter
-  
-    if (!searchQuery) {
-      return res.status(400).json({ error: "Search query is required." });
-    }
-  
-    try {
-      const lessons = db.collection("lessons");
+app.get("/search", async (req, res, next) => {
+  const searchQuery = req.query.q; // Capture the query parameter
+
+  if (!searchQuery) {
+    return res.status(406).json({ error: "Search query is required." });
+  }
+
+  try {
+    const lessons = db.collection("lessons");
   
       // Perform a full-text search (ensure you created the correct text index)
       const results = await lessons
@@ -172,14 +172,14 @@ app.get("/search", async (req, res) => {
   
     // Validate the lesson ID format
     if (!ObjectId.isValid(lessonId)) {
-      return res.status(400).json({ error: "Invalid lesson ID." });
+      return res.status(408).json({ error: "Invalid lesson ID." });
     }
   
     const updatedData = req.body;
   
     // Check if the updated data is provided
     if (!updatedData || Object.keys(updatedData).length === 0) {
-      return res.status(400).json({ error: "No data provided for update." });
+      return res.status(408).json({ error: "No data provided for update." });
     }
   
     const lessons = db.collection("lessons");
@@ -193,7 +193,7 @@ app.get("/search", async (req, res) => {
           res.json({ message: "Lesson updated successfully" });
         } else {
           res
-            .status(404)
+            .status(408)
             .json({ error: "Lesson not found or no fields changed." });
         }
       })
@@ -222,16 +222,7 @@ app.get('/health', (req, res) => {
   });
 });
 
-
-// // Serve static files from the Vue.js directory
-// app.use(express.static(path.join(__dirname, '../Vue.js')));
-
-// // Default route to serve index.html
-// app.get('/', (req, res) => {
-//     res.sendFile(path.join(__dirname, '../Vue.js', 'index.html'));
-// });
-
-// Fallback route for undefined paths
+// Default route for invalid requests
 app.use((req, res) => {
     res.status(404).send('Page not found');
 });
@@ -240,7 +231,7 @@ app.use((req, res) => {
   const port = process.env.PORT || 8080;
   app.listen(port, function () {
     console.log(
-      `Server is running on ${port}! Open your browser and navigate to http://localhost:${port}`
+      `Server is running on https://myapp-env.eba-qzx7ttw3.eu-west-2.elasticbeanstalk.com/${port}`
     );
   });
 
