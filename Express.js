@@ -166,7 +166,6 @@ app.get("/search", async (req, res, next) => {
         next(error);
       });
   });
-  
   app.put("/updateLesson/:id", function (req, res, next) {
     const lessonId = req.params.id;
   
@@ -202,8 +201,34 @@ app.get("/search", async (req, res, next) => {
         next(error);
       });
   });
+ 
+  app.delete("/deleteLesson/:id", function (req, res, next) {
+    const lessonId = req.params.id;
   
-  // Middleware for error handling
+    // Validate the lesson ID format
+    if (!ObjectId.isValid(lessonId)) {
+      return res.status(408).json({ error: "Invalid lesson ID." });
+    }
+  
+    const lessons = db.collection("lessons");
+  
+    // Perform the delete operation using promises
+    lessons
+      .deleteOne({ _id: new ObjectId(lessonId) })
+      .then((result) => {
+        // Check if the lesson was deleted successfully
+        if (result.deletedCount > 0) {
+          res.json({ message: "Lesson deleted successfully" });
+        } else {
+          res.status(408).json({ error: "Lesson not found." });
+        }
+      })
+      .catch((error) => {
+        // Pass the error to the next error-handling middleware
+        next(error);
+      });
+  });
+  
   app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(500).json({
